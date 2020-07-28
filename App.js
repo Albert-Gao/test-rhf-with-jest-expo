@@ -3,15 +3,14 @@ import { Text, Button, TextInput, View } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 
 export default function App({ mock }) {
-  const form = useForm({
+  const { errors, control, handleSubmit } = useForm({
     defaultValues: { name: "" },
   });
-  const { errors, control } = form;
 
   const errorText = errors["name"]?.message;
   const isError = Boolean(errorText);
 
-  const onSubmit = form.handleSubmit(async ({ name }) => {
+  const onSubmit = handleSubmit(async ({ name }) => {
     mock(name);
   });
 
