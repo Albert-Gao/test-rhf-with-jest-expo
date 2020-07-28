@@ -1,21 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { Text, Button, TextInput, View } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 
-export default function App() {
+export default function App({ mock }) {
+  const form = useForm({
+    defaultValues: { name: "" },
+  });
+  const { errors, control } = form;
+
+  const errorText = errors["name"]?.message;
+  const isError = Boolean(errorText);
+
+  const onSubmit = form.handleSubmit(async ({ name }) => {
+    mock(name);
+  });
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ margin: 10 }}>
+      <Controller
+        control={control}
+        render={({ onChange, onBlur, value }) => (
+          <TextInput
+            style={{ borderColor: "black" }}
+            testID="nameInput"
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+          />
+        )}
+        rules={{ required: "name can't be blank" }}
+        name="name"
+      />
+
+      {isError && <Text testID="nameErrorText">{errorText}</Text>}
+
+      <Button testID="submitButton" title="submit" onPress={onSubmit} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
